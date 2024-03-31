@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "947247997448",
+    "project_id": "meno-7ccbd",
+    "storage_bucket": "meno-7ccbd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:947247997448:android:91db927195aaca0ebbe7bd",
+        "android_client_info": {
+          "package_name": "com.example.meno"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3a2HBPe0M_MqAF3CTgCDYcV6j58bCJB8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
