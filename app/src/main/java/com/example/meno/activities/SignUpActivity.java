@@ -6,20 +6,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.meno.MainActivity;
 import com.example.meno.databinding.ActivitySignUpBinding;
 import com.example.meno.utilities.Constants;
 import com.example.meno.utilities.PreferenceManager;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.Base64;
 import java.util.HashMap;
-import java.util.regex.Pattern;
 
 public class SignUpActivity extends AppCompatActivity {
     private ActivitySignUpBinding binding;
