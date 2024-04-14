@@ -112,7 +112,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/_4sdp"
             android:padding="@dimen/_8sdp"
-            android:src="@drawable/ic_send"
+            android:src="@drawable/ic_baseline_send_24"
             android:tint="@color/white" />
 
     </FrameLayout>
