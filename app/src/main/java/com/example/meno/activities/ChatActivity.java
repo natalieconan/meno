@@ -92,8 +92,8 @@ public class ChatActivity extends AppCompatActivity {
         chatMessages = new ArrayList<>();
 
         chatAdapter = new ChatAdapter(
-                getBitmapFromEncodedImage(receivedUser.image),
                 chatMessages,
+                getBitmapFromEncodedImage(receivedUser.image),
                 preferenceManager.getString(Constants.KEY_USER_ID)
         );
 
