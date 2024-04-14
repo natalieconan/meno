@@ -31,7 +31,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         receiverProfileImage = bitmap;
     }
 
-    public ChatAdapter(ArrayList<ChatMessage> chatMessages, Bitmap receiverProfileImage, String senderId) {
+    public ChatAdapter(Bitmap receiverProfileImage, ArrayList<ChatMessage> chatMessages, String senderId) {
         this.chatMessages = chatMessages;
         this.receiverProfileImage = receiverProfileImage;
         this.senderId = senderId;

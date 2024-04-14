@@ -55,4 +55,6 @@
     <string name="sign_up">Sign Up</string>
     <string name="select_user">Select User</string>
     <string name="type_a_message">Type a message</string>
+    <string name="how_are_you">How are you</string>
+    <string name="i_m_fine_thank_you">I\'m fine thank you</string>
 </resources>

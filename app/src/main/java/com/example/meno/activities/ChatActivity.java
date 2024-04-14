@@ -1,10 +1,12 @@
 package com.example.meno.activities;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -92,8 +94,8 @@ public class ChatActivity extends AppCompatActivity {
         chatMessages = new ArrayList<>();
 
         chatAdapter = new ChatAdapter(
-                chatMessages,
                 getBitmapFromEncodedImage(receivedUser.image),
+                chatMessages,
                 preferenceManager.getString(Constants.KEY_USER_ID)
         );
 
@@ -139,6 +141,7 @@ public class ChatActivity extends AppCompatActivity {
                     chatMessage.message = documentChange.getDocument().getString(Constants.KEY_MESSAGE);
                     chatMessage.dateTime = getReadableDateTime(documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP));
                     chatMessage.dateObject = documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP);
+                    chatMessage.type = "text";
                     chatMessages.add(chatMessage);
                 }
             }
@@ -155,7 +158,12 @@ public class ChatActivity extends AppCompatActivity {
     };
 
     private Bitmap getBitmapFromEncodedImage(String encodedImage) {
-        return null;
+        if (encodedImage != null) {
+            byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        } else {
+            return null;
+        }
     }
 
     private void loadReceiverDetails() {

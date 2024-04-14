@@ -26,7 +26,7 @@
 
         <TextView
             android:id="@+id/textMessage"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_4sdp"
             android:background="@drawable/background_recieved_message"
