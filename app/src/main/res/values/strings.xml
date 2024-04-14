@@ -57,4 +57,6 @@
     <string name="type_a_message">Type a message</string>
     <string name="how_are_you">How are you</string>
     <string name="i_m_fine_thank_you">I\'m fine thank you</string>
+    <string name="nova">NOVA</string>
+    <string name="online">Online</string>
 </resources>
