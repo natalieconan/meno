@@ -26,3 +26,6 @@ replay_pid*
 # build file
 .gradle/*
 .idea/*
+
+# bash script
+moveUser.sh
