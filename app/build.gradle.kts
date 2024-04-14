@@ -45,8 +45,10 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment:2.7.7")
     implementation("androidx.navigation:navigation-ui:2.7.7")
     implementation("androidx.constraintlayout:constraintlayout:2.2.0-alpha13")
+
     // To use constraintlayout in compose
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha13")
+    implementation("com.google.firebase:firebase-auth:22.3.1")
 
 
     testImplementation("junit:junit:4.13.2")
@@ -62,7 +64,8 @@ dependencies {
 
     // Firebase
     implementation("com.google.firebase:firebase-messaging:23.4.1")
-    implementation("com.google.firebase:firebase-firestore:24.11.0")
+    implementation("com.google.firebase:firebase-firestore:24.11.1")
+    implementation("com.google.firebase:firebase-storage:20.3.0")
 
     // MultiDex
     implementation("androidx.multidex:multidex:2.0.1")

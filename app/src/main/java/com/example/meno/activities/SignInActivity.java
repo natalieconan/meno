@@ -2,6 +2,7 @@ package com.example.meno.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
 
@@ -48,6 +49,8 @@ public class SignInActivity extends AppCompatActivity {
     private void signIn() {
         loading(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
+
+        // Retrieving user info from Firestore and storing SharePrefs
         database.collection(Constants.KEY_COLLECTION_USERS)
                 .whereEqualTo(Constants.KEY_EMAIL, binding.inputEmail.getText().toString())
                 .whereEqualTo(Constants.KEY_PASSWORD, binding.inputPassword.getText().toString())
@@ -55,11 +58,15 @@ public class SignInActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null
                             && task.getResult().getDocuments().size() > 0) {
+
                         DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+
                         preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                         preferenceManager.putString(Constants.KEY_USER_ID, documentSnapshot.getId());
                         preferenceManager.putString(Constants.KEY_NAME, documentSnapshot.getString(Constants.KEY_NAME));
-                        preferenceManager.putString(Constants.KEY_IMAGE, null);
+                        preferenceManager.putString(Constants.KEY_IMAGE, documentSnapshot.getString(Constants.KEY_IMAGE));
+
+                        // move to main menu
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
@@ -68,16 +75,6 @@ public class SignInActivity extends AppCompatActivity {
                         showToast("Unable to sign in");
                     }
                 });
-    }
-
-    private void loading(Boolean isLoading) {
-        if (isLoading) {
-            binding.buttonSignIn.setVisibility(View.INVISIBLE);
-            binding.progressBar.setVisibility(View.VISIBLE);
-        } else {
-            binding.progressBar.setVisibility(View.INVISIBLE);
-            binding.buttonSignIn.setVisibility(View.VISIBLE);
-        }
     }
 
     private void showToast(String message) {
@@ -90,11 +87,26 @@ public class SignInActivity extends AppCompatActivity {
             return false;
         }
 
+        if (!Patterns.EMAIL_ADDRESS.matcher(binding.inputEmail.getText().toString()).matches()) {
+            showToast("Enter valid email");
+            return false;
+        }
+
         if (binding.inputPassword.getText().toString().trim().isEmpty()) {
             showToast("Enter Password");
             return false;
         }
 
         return true;
+    }
+
+    private void loading(Boolean isLoading) {
+        if (isLoading) {
+            binding.buttonSignIn.setVisibility(View.INVISIBLE);
+            binding.progressBar.setVisibility(View.VISIBLE);
+        } else {
+            binding.progressBar.setVisibility(View.INVISIBLE);
+            binding.buttonSignIn.setVisibility(View.VISIBLE);
+        }
     }
 }
