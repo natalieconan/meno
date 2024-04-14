@@ -62,6 +62,10 @@ dependencies {
     // Rounded Image View
     implementation("com.makeramen:roundedimageview:2.3.0")
 
+    // Record View
+    implementation("com.github.3llomi:RecordView:3.1.3")
+
+
     // Firebase
     implementation("com.google.firebase:firebase-messaging:23.4.1")
     implementation("com.google.firebase:firebase-firestore:24.11.1")

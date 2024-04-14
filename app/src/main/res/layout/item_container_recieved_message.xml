@@ -37,7 +37,7 @@
             app:layout_constraintWidth_max="wrap"
             android:padding="@dimen/_12sdp"
             android:textColor="@color/white"
-            android:textSize="@dimen/_8ssp"
+            android:textSize="@dimen/_13ssp"
             app:layout_constraintStart_toEndOf="@id/imageProfile"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent="0.75"/>
