@@ -1,12 +1,14 @@
 package com.example.meno.activities;
 
 import android.graphics.Bitmap;
+import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.meno.R;
 import com.example.meno.adapters.ChatAdapter;
 import com.example.meno.databinding.ActivityChatBinding;
 import com.example.meno.models.ChatMessage;
@@ -17,6 +19,7 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.StorageTask;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -24,18 +27,51 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class ChatActivity extends AppCompatActivity {
 
     private ActivityChatBinding binding;
-    private User receiverUser;
-    private List<ChatMessage> chatMessages;
-    private ChatAdapter chatAdapter;
+
+    // user info storing
+    private User receivedUser;
+
     private PreferenceManager preferenceManager;
+
+    // chat history
+    private ArrayList<ChatMessage> chatMessages;
+
+    // adapter
+    private ChatAdapter chatAdapter;
+
+    // communicate with data on Firestore
     private FirebaseFirestore database;
+
+    // Id of a conversation between 2 users
+    private String conversationId = null;
+
+    // Check the online status of user
+    private Boolean isReceiverAvailaible = false;
+
+    // Id of messages
+    private String chatId = null;
+
+    // Url to images, audios that are stored on Firestore
+    private String imageURL = null, audioURL = null;
+
+    // upload images and audio to Storage
+    private StorageTask uploadTask;
+
+    private Uri imageUri, audioUri;
+
+    // create a recording
+    private MediaRecorder mediaRecorder;
+
+    // path to recorded file
+    private String audioPath;
+
+    // temporary stop display UI bottom chat
+    Handler handlerUI = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,21 +85,29 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void init() {
+        binding.imageProfile.setImageBitmap(getBitmapFromEncodedImage(receivedUser.image));
         preferenceManager = new PreferenceManager(getApplicationContext());
+
+        // Storing messages between 2 users
         chatMessages = new ArrayList<>();
+
         chatAdapter = new ChatAdapter(
-                getBitmapFromEncodedString(receiverUser.image),
+                getBitmapFromEncodedImage(receivedUser.image),
                 chatMessages,
                 preferenceManager.getString(Constants.KEY_USER_ID)
         );
+
         binding.chatRecyclerView.setAdapter(chatAdapter);
         database = FirebaseFirestore.getInstance();
+
+        // setup RecordView for record button
+        // ...
     }
 
     private void sendMessage() {
         HashMap<String, Object> message = new HashMap<>();
         message.put(Constants.KEY_SENDER_ID, preferenceManager.getString(Constants.KEY_USER_ID));
-        message.put(Constants.KEY_RECEIVER_ID, receiverUser.id);
+        message.put(Constants.KEY_RECEIVER_ID, receivedUser.id);
         message.put(Constants.KEY_MESSAGE, binding.inputMessage.getText().toString());
         message.put(Constants.KEY_TIMESTAMP, new Date());
         database.collection(Constants.KEY_COLLECTION_CHAT).add(message);
@@ -73,7 +117,7 @@ public class ChatActivity extends AppCompatActivity {
     private void listenMessages() {
         database.collection(Constants.KEY_COLLECTION_CHAT)
                 .whereEqualTo(Constants.KEY_SENDER_ID, preferenceManager.getString(Constants.KEY_USER_ID))
-                .whereEqualTo(Constants.KEY_RECEIVER_ID, receiverUser.id)
+                .whereEqualTo(Constants.KEY_RECEIVER_ID, receivedUser.id)
                 .addSnapshotListener(eventListener);
         database.collection(Constants.KEY_COLLECTION_CHAT)
                 .whereEqualTo(Constants.KEY_RECEIVER_ID, preferenceManager.getString(Constants.KEY_USER_ID))
@@ -110,13 +154,13 @@ public class ChatActivity extends AppCompatActivity {
         binding.progressBar.setVisibility(View.GONE);
     };
 
-    private Bitmap getBitmapFromEncodedString(String encodedImage) {
+    private Bitmap getBitmapFromEncodedImage(String encodedImage) {
         return null;
     }
 
     private void loadReceiverDetails() {
-        receiverUser = (User) getIntent().getSerializableExtra(Constants.KEY_USER);
-        binding.textName.setText(receiverUser.name);
+        receivedUser = (User) getIntent().getSerializableExtra(Constants.KEY_USER);
+        binding.textName.setText(receivedUser.name);
     }
 
     private void setListeners() {
