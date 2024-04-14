@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.meno.databinding.ActivityMainBinding;
 import com.example.meno.utilities.Constants;
 import com.example.meno.utilities.PreferenceManager;
@@ -16,7 +14,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private ActivityMainBinding binding;
     private PreferenceManager preferenceManager;
 
