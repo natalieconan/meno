@@ -1,9 +1,15 @@
-package com.example.meno.activities;
+package com.example.meno;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.widget.Toast;
 
+import com.example.meno.activities.BaseActivity;
+import com.example.meno.activities.SignInActivity;
+import com.example.meno.activities.UsersActivity;
 import com.example.meno.databinding.ActivityMainBinding;
 import com.example.meno.utilities.Constants;
 import com.example.meno.utilities.PreferenceManager;
@@ -25,12 +31,20 @@ public class MainActivity extends BaseActivity {
         setContentView(binding.getRoot());
         preferenceManager = new PreferenceManager(getApplicationContext());
         loadUserDetails();
-        getToken();
+        loadHeaders();
         setListeners();
+        getToken();
+    }
+
+    private void loadHeaders() {
+        binding.textName.setText(preferenceManager.getString(Constants.KEY_NAME));
+        byte[] bytes = Base64.decode(preferenceManager.getString(Constants.KEY_IMAGE), Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        binding.imageProfile.setImageBitmap(bitmap);
     }
 
     private void setListeners() {
-        binding.imageSignout.setOnClickListener(v -> signOut());
+        binding.imageSignOut.setOnClickListener(v -> signOut());
 
         binding.fabNewChat.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), UsersActivity.class);
