@@ -1,5 +1,6 @@
 package com.example.meno;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,7 +10,6 @@ import android.widget.Toast;
 
 import com.example.meno.activities.BaseActivity;
 import com.example.meno.activities.SignInActivity;
-import com.example.meno.activities.UsersActivity;
 import com.example.meno.databinding.ActivityMainBinding;
 import com.example.meno.utilities.Constants;
 import com.example.meno.utilities.PreferenceManager;
@@ -23,17 +23,32 @@ import java.util.HashMap;
 public class MainActivity extends BaseActivity {
     private ActivityMainBinding binding;
     private PreferenceManager preferenceManager;
+    public static Context contextOfApplication;
+    public static Context getContextOfApplication()
+    {
+        return contextOfApplication;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        preferenceManager = new PreferenceManager(getApplicationContext());
+        init();
         loadUserDetails();
         loadHeaders();
         setListeners();
         getToken();
+    }
+
+    private void init() {
+        contextOfApplication = getApplicationContext();
+
+        preferenceManager = new PreferenceManager(getApplicationContext());
+
+        // return chat fragment screen
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                new ChatFragment()).commit();
     }
 
     private void loadHeaders() {
@@ -45,11 +60,6 @@ public class MainActivity extends BaseActivity {
 
     private void setListeners() {
         binding.imageSignOut.setOnClickListener(v -> signOut());
-
-        binding.fabNewChat.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), UsersActivity.class);
-            startActivity(intent);
-        });
     }
 
     private void loadUserDetails() {

@@ -6,12 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.example.meno.adapters.ChatAdapter;
 import com.example.meno.databinding.ActivityChatBinding;
@@ -73,13 +74,16 @@ public class ChatActivity extends BaseActivity {
     // Url to images, audios that are stored on Firestore
     private String imageURL = null;
 
+    // Image URI from device;
+    private Uri imageUri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityChatBinding.inflate(getLayoutInflater());
-        setListeners();
         setContentView(binding.getRoot());
         loadReceiverDetails();
+        setListeners();
         init();
         listenMessages();
     }
@@ -146,7 +150,11 @@ public class ChatActivity extends BaseActivity {
         message.put(Constants.KEY_RECEIVER_ID, receivedUser.id);
         message.put(Constants.KEY_MESSAGE, binding.inputMessage.getText().toString());
         message.put(Constants.KEY_TIMESTAMP, new Date());
+
         database.collection(Constants.KEY_COLLECTION_CHAT).add(message);
+
+        updateLastMessage(message);
+
         binding.inputMessage.setText(null);
     }
 
@@ -165,14 +173,16 @@ public class ChatActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 438 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri imageUri = data.getData();
-            StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Image Files");
+            // get image URI and push it to "image files" folder on firebase.
+            imageUri = data.getData();
+
+            StorageReference storageReference = FirebaseStorage.getInstance("gs://meno-7ccbd.appspot.com").getReference().child("Image Files");
 
             DocumentReference ref = database.collection(Constants.KEY_COLLECTION_CHAT).document();
             chatId = ref.getId();
 
             StorageReference imagePath = storageReference.child(chatId + "." + "jpg");
-            // upload images and audio to Storage
+            // upload images to Storage
             StorageTask<UploadTask.TaskSnapshot> uploadTask = imagePath.putFile(imageUri);
             uploadTask.continueWithTask(task -> {
                 if (!task.isSuccessful()) {
@@ -204,7 +214,9 @@ public class ChatActivity extends BaseActivity {
                                         showToast(task1.getException().getMessage());
                                 }
                             });
+
                     updateLastMessage(message);
+
                     binding.inputMessage.setText(null);
                 }
             });
@@ -214,7 +226,7 @@ public class ChatActivity extends BaseActivity {
     private void updateLastMessage(HashMap<String, Object> message) {
         // display old conversation or create new one
         if (conversationId != null) {
-                    updateConversation(message);
+            updateConversation(message);
         } else {
             HashMap<String, Object> conversation = new HashMap<>();
             conversation.put(Constants.KEY_SENDER_ID, preferenceManager.getString(Constants.KEY_USER_ID));
