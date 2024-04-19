@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.meno.databinding.ItemContainerRecievedMessageBinding;
 import com.example.meno.databinding.ItemContainerSentMessageBinding;
 import com.example.meno.models.ChatMessage;
+import com.example.meno.utilities.ImageDownloaderTask;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -85,12 +87,17 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     static class SentMessageViewHolder extends RecyclerView.ViewHolder {
-        private ItemContainerSentMessageBinding binding;
+        private final ItemContainerSentMessageBinding binding;
 
         // binding ViewHolder design
         SentMessageViewHolder(ItemContainerSentMessageBinding itemContainerSentMessageBinding) {
             super(itemContainerSentMessageBinding.getRoot());
             binding = itemContainerSentMessageBinding;
+        }
+
+        private void bindImageToImageView(String imageUrl, RoundedImageView imageView)  {
+            ImageDownloaderTask downloaderTask = new ImageDownloaderTask(imageView);
+            downloaderTask.execute(imageUrl);
         }
 
         // attach data to viewHolder base on message type
@@ -121,6 +128,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ReceivedMessageViewHolder(ItemContainerRecievedMessageBinding itemContainerRecievedMessageBinding) {
             super(itemContainerRecievedMessageBinding.getRoot());
             binding = itemContainerRecievedMessageBinding;
+        }
+
+        private void bindImageToImageView(String imageUrl, RoundedImageView imageView)  {
+            ImageDownloaderTask downloaderTask = new ImageDownloaderTask(imageView);
+            downloaderTask.execute(imageUrl);
         }
 
         void setData(ChatMessage chatMessage, Bitmap receiverProfileImage) {
