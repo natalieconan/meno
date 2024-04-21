@@ -1,6 +1,5 @@
 package com.example.meno.activities;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,9 +31,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,31 +43,14 @@ import java.util.Objects;
 public class ChatActivity extends BaseActivity {
 
     private ActivityChatBinding binding;
-
-    // user info storing
     private User receivedUser;
-
     private PreferenceManager preferenceManager;
-
-    // chat history
     private ArrayList<ChatMessage> chatMessages;
-
-    // adapter
     private ChatAdapter chatAdapter;
-
-    // communicate with data on Firestore
     private FirebaseFirestore database;
-
-    // Id of a conversation between 2 users
     private String conversationId = null;
-
-    // Check the online status of user
     private Boolean isReceiverAvailaible = false;
-
-    // Id of messages
     private String chatId = null;
-
-    // Url to images, audios that are stored on Firestore
     private String imageURL = null;
 
     @Override
@@ -128,7 +107,6 @@ public class ChatActivity extends BaseActivity {
         binding.imageProfile.setImageBitmap(getBitmapFromEncodedImage(receivedUser.image));
         preferenceManager = new PreferenceManager(getApplicationContext());
 
-        // Storing messages between 2 users
         chatMessages = new ArrayList<>();
 
         chatAdapter = new ChatAdapter(
@@ -149,9 +127,7 @@ public class ChatActivity extends BaseActivity {
         message.put(Constants.KEY_TIMESTAMP, new Date());
 
         database.collection(Constants.KEY_COLLECTION_CHAT).add(message);
-
         updateLastMessage(message);
-
         binding.inputMessage.setText(null);
     }
 
@@ -170,18 +146,20 @@ public class ChatActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 438 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            // get image URI and push it to "image files" folder on firebase.
             // Image URI from device;
             Uri imageUri = data.getData();
 
-            StorageReference storageReference = FirebaseStorage.getInstance("gs://meno-7ccbd.appspot.com").getReference().child("Image Files");
+            StorageReference storageReference = FirebaseStorage.getInstance("gs://meno-7ccbd.appspot.com").
+                                                    getReference().child("Image Files");
 
             DocumentReference ref = database.collection(Constants.KEY_COLLECTION_CHAT).document();
             chatId = ref.getId();
 
             StorageReference imagePath = storageReference.child(chatId + "." + "jpg");
+
             // upload images to Storage
             StorageTask<UploadTask.TaskSnapshot> uploadTask = imagePath.putFile(imageUri);
+
             uploadTask.continueWithTask(task -> {
                 if (!task.isSuccessful()) {
                     if (task.getException() != null)
@@ -239,31 +217,6 @@ public class ChatActivity extends BaseActivity {
 
             addConversation(conversation);
         }
-        // if user if offline, send notification to devices
-        if (!isReceiverAvailaible) {
-            try {
-                // set up for notification
-                JSONArray tokens = new JSONArray();
-                tokens.put(receivedUser.token);
-
-                JSONObject data = new JSONObject();
-                data.put(Constants.KEY_USER_ID, preferenceManager.getString(Constants.KEY_USER_ID));
-                data.put(Constants.KEY_NAME, preferenceManager.getString(Constants.KEY_NAME));
-                data.put(Constants.KEY_FCM_TOKEN, preferenceManager.getString(Constants.KEY_FCM_TOKEN));
-                if (Objects.equals(message.get(Constants.KEY_TYPE), "text")) {
-                    data.put(Constants.KEY_MESSAGE, binding.inputMessage.getText().toString());
-                } else if (Objects.equals(message.get(Constants.KEY_TYPE), "image")) {
-                    data.put(Constants.KEY_MESSAGE, String.format("%s %s", preferenceManager.getString(Constants.KEY_NAME), "sent you an image"));
-                } else if (Objects.equals(message.get(Constants.KEY_TYPE), "audio")) {
-                    data.put(Constants.KEY_MESSAGE, String.format("%s %s", preferenceManager.getString(Constants.KEY_NAME), "sent you an audio"));
-                }
-                JSONObject body = new JSONObject();
-                body.put(Constants.REMOTE_MSG_DATA, data);
-                body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens);
-            } catch (Exception e) {
-                showToast(e.getMessage());
-            }
-        }
     }
 
     private void showToast(String message) {
@@ -314,7 +267,6 @@ public class ChatActivity extends BaseActivity {
                 .addSnapshotListener(eventListener);
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private final EventListener<QuerySnapshot> eventListener = (value, error) -> {
         if (error != null) {
             return;
@@ -359,7 +311,7 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void loadReceiverDetails() {
-        receivedUser = (User) getIntent().getSerializableExtra(Constants.KEY_USER);
+        receivedUser = (User) getIntent().getParcelableExtra(Constants.KEY_USER);
         assert receivedUser != null;
         binding.textName.setText(receivedUser.name);
     }
