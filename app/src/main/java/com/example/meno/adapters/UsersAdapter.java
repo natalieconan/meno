@@ -22,7 +22,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
 
     public static final int VIEW_TYPE_FRAGMENT_USER = 1;
     public static final int VIEW_TYPE_FRAGMENT_GROUP = 2;
-    private final int VIEW_TYPE;
+    protected final int VIEW_TYPE;
 
     public UsersAdapter(List<User> users, UserListener userListener) {
         this.users = users;
