@@ -10,9 +10,16 @@ import com.example.meno.utilities.PreferenceManager;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * Base Activity:
+ * Tracking user is available or not
+ *
+ */
 public class BaseActivity extends AppCompatActivity {
 
     private DocumentReference documentReference;
+    protected final Integer USER_NOT_AVAILABLE = 0;
+    protected final Integer USER_AVAILABLE = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,13 +37,13 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        documentReference.update(Constants.KEY_AVAILABILITY, 0);
+        documentReference.update(Constants.KEY_AVAILABILITY, USER_NOT_AVAILABLE);
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        documentReference.update(Constants.KEY_AVAILABILITY, 1);
+        documentReference.update(Constants.KEY_AVAILABILITY, USER_AVAILABLE);
     }
 }
