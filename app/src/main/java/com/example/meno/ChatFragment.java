@@ -8,10 +8,10 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.example.meno.activities.UsersActivity;
 import com.example.meno.databinding.FragmentChatBinding;
@@ -38,16 +38,25 @@ public class ChatFragment extends Fragment {
     }
 
     private void setListeners() {
-        binding.fabNewChat.setOnClickListener(v ->
-                startActivity(new Intent(getActivity().getApplicationContext(), UsersActivity.class)));
+        binding.fabNewChat.setOnClickListener(v -> {
+            FragmentActivity activity = getActivity();
+            if (activity != null) {
+                startActivity(
+                        new Intent(activity.getApplicationContext(), UsersActivity.class)
+                );
+            }
+        });
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         binding = FragmentChatBinding.inflate(inflater, container, false);
-        preferenceManager = new PreferenceManager(getActivity().getApplicationContext());
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            preferenceManager = new PreferenceManager(activity.getApplicationContext());
+        }
         init();
         setListeners();
         listenConversations();
@@ -55,13 +64,11 @@ public class ChatFragment extends Fragment {
     }
 
     private void init() {
-        binding.imageProfile.setImageBitmap(getConversationImage(preferenceManager.getString(Constants.KEY_IMAGE)));
+        binding.imageProfile.setImageBitmap(
+                getConversationImage(preferenceManager.getString(Constants.KEY_IMAGE))
+        );
         conversations = new ArrayList<>();
         database = FirebaseFirestore.getInstance();
-    }
-
-    private void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     private void listenConversations() {
