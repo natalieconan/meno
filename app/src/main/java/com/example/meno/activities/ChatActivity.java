@@ -74,9 +74,6 @@ public class ChatActivity extends BaseActivity {
     // Url to images, audios that are stored on Firestore
     private String imageURL = null;
 
-    // Image URI from device;
-    private Uri imageUri;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -174,7 +171,8 @@ public class ChatActivity extends BaseActivity {
 
         if (requestCode == 438 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             // get image URI and push it to "image files" folder on firebase.
-            imageUri = data.getData();
+            // Image URI from device;
+            Uri imageUri = data.getData();
 
             StorageReference storageReference = FirebaseStorage.getInstance("gs://meno-7ccbd.appspot.com").getReference().child("Image Files");
 
@@ -194,7 +192,7 @@ public class ChatActivity extends BaseActivity {
                 return imagePath.getDownloadUrl();
             }).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Uri downloadURL = (Uri) task.getResult();
+                    Uri downloadURL = task.getResult();
                     imageURL = downloadURL.toString();
 
                     HashMap<String, Object> message = new HashMap<>();
@@ -262,8 +260,6 @@ public class ChatActivity extends BaseActivity {
                 JSONObject body = new JSONObject();
                 body.put(Constants.REMOTE_MSG_DATA, data);
                 body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens);
-
-                sendNotification(body.toString());
             } catch (Exception e) {
                 showToast(e.getMessage());
             }
@@ -272,10 +268,6 @@ public class ChatActivity extends BaseActivity {
 
     private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    private void sendNotification(String messageBody) {
-        // Create API to send notification to other devices
     }
 
     // check user online status

@@ -42,6 +42,8 @@
             app:riv_oval="true"
             tools:ignore="ImageContrastCheck" />
 
+
+
         <View
             android:id="@+id/viewSupporter"
             android:layout_width="1dp"
@@ -57,6 +59,7 @@
             android:layout_marginHorizontal="@dimen/_8sdp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:text="@string/tester"
             android:textColor="@color/primary_text"
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold"
@@ -71,6 +74,7 @@
             android:layout_marginHorizontal="@dimen/_8sdp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:text="@string/ang_ho_t_ng"
             android:textColor="@color/secondary_text"
             android:textSize="@dimen/_10ssp"
             app:layout_constraintEnd_toStartOf="@id/imagePhone"
@@ -120,10 +124,9 @@
             android:layout_height="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_20sdp"
             android:background="@drawable/background_availability"
-            android:importantForAccessibility="no"
             app:layout_constraintEnd_toEndOf="@id/imageProfile"
             app:layout_constraintTop_toTopOf="@id/imageProfile"
-            tools:ignore="ImageContrastCheck" />
+            tools:ignore="ContentDescription,ImageContrastCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.recyclerview.widget.RecyclerView
@@ -203,18 +206,15 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/imageCamera"
                 app:layout_constraintTop_toTopOf="@id/imageCamera" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <EditText
             android:id="@+id/inputMessage"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:autofillHints=""
             android:background="@drawable/background_chat_input"
             android:drawableEnd="@drawable/icon_emoji"
             android:drawableTint="@color/primary"
-            android:hint="@string/input_message"
             android:inputType="text"
             android:paddingStart="@dimen/_16sdp"
             android:paddingEnd="@dimen/_6sdp"
@@ -222,7 +222,8 @@
             app:layout_constraintEnd_toStartOf="@id/layoutLikeAndSend"
             app:layout_constraintStart_toEndOf="@id/layoutBottomLeft"
             app:layout_constraintTop_toTopOf="@id/layoutBottomLeft"
-            tools:ignore="LabelFor,TextContrastCheck" />
+            tools:ignore="LabelFor,SpeakableTextPresentCheck"
+            android:autofillHints="typing" />
         <FrameLayout
             android:id="@+id/layoutLikeAndSend"
             android:layout_width="wrap_content"
@@ -271,7 +272,6 @@
             android:id="@+id/record_button"
             android:layout_width="@dimen/_26sdp"
             android:layout_height="@dimen/_26sdp"
-            android:contentDescription="@string/record_button"
             android:padding="@dimen/_3sdp"
             android:scaleType="centerInside"
             android:tint="@color/primary"
@@ -279,7 +279,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:mic_icon="@drawable/icon_record"
-            tools:ignore="RedundantDescriptionCheck,TouchTargetSizeCheck" />
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
