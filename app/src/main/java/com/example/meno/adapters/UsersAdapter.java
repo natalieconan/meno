@@ -9,20 +9,20 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.meno.activities.GroupActivity;
 import com.example.meno.databinding.ItemContainerUserBinding;
+import com.example.meno.databinding.ItemContainerUserGroupBinding;
 import com.example.meno.listeners.UserListener;
 import com.example.meno.models.User;
 
 import java.util.ArrayList;
 
-public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHolder> {
-
+public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private final ArrayList<User> users;
     private final UserListener userListener;
-
     public static final int VIEW_TYPE_FRAGMENT_USER = 1;
     public static final int VIEW_TYPE_FRAGMENT_GROUP = 2;
-    protected final int VIEW_TYPE;
+    private final int VIEW_TYPE;
 
     public UsersAdapter(ArrayList<User> users, UserListener userListener) {
         this.users = users;
@@ -32,18 +32,31 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
 
     @NonNull
     @Override
-    public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemContainerUserBinding itemContainerUserBinding = ItemContainerUserBinding.inflate(
-                LayoutInflater.from(parent.getContext()),
-                parent,
-                false
-        );
-        return new UserViewHolder(itemContainerUserBinding);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (this.VIEW_TYPE == VIEW_TYPE_FRAGMENT_USER) {
+            ItemContainerUserBinding itemContainerUserBinding = ItemContainerUserBinding.inflate(
+                    LayoutInflater.from(parent.getContext()),
+                    parent,
+                    false
+            );
+            return new UserViewHolder(itemContainerUserBinding);
+        } else{
+            ItemContainerUserGroupBinding itemContainerUserGroupBinding = ItemContainerUserGroupBinding.inflate(
+                    LayoutInflater.from(parent.getContext()),
+                    parent,
+                    false
+            );
+            return new UserGroupViewHolder(itemContainerUserGroupBinding);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-        ((UserViewHolder)holder).setUserData(users.get(position));
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (this.VIEW_TYPE == VIEW_TYPE_FRAGMENT_USER) {
+            ((UserViewHolder)holder).setUserData(users.get(position));
+        } else {
+            ((UserGroupViewHolder)holder).setUserData(users.get(position));
+        }
     }
 
     @Override
@@ -59,9 +72,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
     }
 
     class UserViewHolder extends RecyclerView.ViewHolder {
-
         ItemContainerUserBinding binding;
-
         UserViewHolder(ItemContainerUserBinding itemContainerUserBinding) {
             super(itemContainerUserBinding.getRoot());
             binding = itemContainerUserBinding;
@@ -75,8 +86,25 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         }
     }
 
+    class UserGroupViewHolder extends RecyclerView.ViewHolder {
+        ItemContainerUserGroupBinding binding;
+
+        UserGroupViewHolder(ItemContainerUserGroupBinding itemContainerUserGroupBinding) {
+            super(itemContainerUserGroupBinding.getRoot());
+            binding = itemContainerUserGroupBinding;
+        }
+
+        void setUserData(User user) {
+            binding.textName.setText(user.name);
+            binding.textEmail.setText(user.email);
+            binding.imageProfile.setImageBitmap(getUserImage(user.image));
+            binding.cbSelectUser.setOnCheckedChangeListener((compoundButton, b) -> GroupActivity.onCheckedChangeListener(user, compoundButton.isChecked()));
+        }
+    }
+
     private Bitmap getUserImage(String encodedImage) {
         byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
+
 }

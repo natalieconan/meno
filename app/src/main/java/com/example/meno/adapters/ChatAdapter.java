@@ -1,6 +1,7 @@
 package com.example.meno.adapters;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,6 +103,9 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         // attach data to viewHolder base on message type
         void setData(ChatMessage chatMessage) {
+            Log.d("meno", "TYPE : " + chatMessage.message);
+            Log.d("meno", "CONTENT : " + chatMessage.type);
+
             switch (chatMessage.type) {
                 case "text":
                     binding.textMessage.setVisibility(View.VISIBLE);
@@ -111,6 +115,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 case "image":
                     binding.textMessage.setVisibility(View.GONE);
                     binding.imageMessage.setVisibility(View.VISIBLE);
+                    Picasso.get().setLoggingEnabled(true);
                     Picasso.get().load(chatMessage.message).into(binding.imageMessage);
                     break;
                 case "audio":
@@ -145,6 +150,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 case "image":
                     binding.textMessage.setVisibility(View.GONE);
                     binding.imageMessage.setVisibility(View.VISIBLE);
+                    Picasso.get().setLoggingEnabled(true);
                     Picasso.get().load(chatMessage.message).into(binding.imageMessage);
                     break;
                 case "audio":

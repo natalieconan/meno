@@ -15,6 +15,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Meno"
         tools:targetApi="31">
+        <activity
+            android:name=".activities.GroupInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.GroupMessageActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.GroupActivity"
+            android:exported="false" />
         <activity android:name=".activities.ChatActivity"
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".activities.UsersActivity" />
