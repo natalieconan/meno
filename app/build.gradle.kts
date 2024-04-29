@@ -84,5 +84,7 @@ dependencies {
     // Picasso
     implementation("com.squareup.picasso:picasso:2.71828")
 
-
+    // Retrofit for HTTP client for Java
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
 }

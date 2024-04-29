@@ -31,6 +31,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -124,6 +127,7 @@ public class ChatActivity extends BaseActivity {
         message.put(Constants.KEY_SENDER_ID, preferenceManager.getString(Constants.KEY_USER_ID));
         message.put(Constants.KEY_RECEIVER_ID, receivedUser.id);
         message.put(Constants.KEY_MESSAGE, binding.inputMessage.getText().toString());
+        message.put(Constants.KEY_TYPE, "text");
         message.put(Constants.KEY_TIMESTAMP, new Date());
 
         database.collection(Constants.KEY_COLLECTION_CHAT).add(message);
@@ -217,11 +221,70 @@ public class ChatActivity extends BaseActivity {
 
             addConversation(conversation);
         }
+
+        if (!isReceiverAvailaible) {
+            try {
+                JSONArray tokens = new JSONArray();
+                tokens.put(receivedUser.token);
+
+                JSONObject data = new JSONObject();
+                data.put(Constants.KEY_USER_ID, preferenceManager.getString(Constants.KEY_USER_ID));
+                data.put(Constants.KEY_NAME, preferenceManager.getString(Constants.KEY_NAME));
+                data.put(Constants.KEY_FCM_TOKEN, preferenceManager.getString(Constants.KEY_FCM_TOKEN));
+                if (Objects.equals(message.get(Constants.KEY_TYPE), "text")) {
+                    data.put(Constants.KEY_MESSAGE, binding.inputMessage.getText().toString());
+                } else if (Objects.equals(message.get(Constants.KEY_TYPE), "image")) {
+                    data.put(Constants.KEY_MESSAGE, String.format("%s %s", preferenceManager.getString(Constants.KEY_NAME), "sent you an image"));
+                } else if (Objects.equals(message.get(Constants.KEY_TYPE), "audio")) {
+                    data.put(Constants.KEY_MESSAGE, String.format("%s %s", preferenceManager.getString(Constants.KEY_NAME), "sent you an audio"));
+                }
+                JSONObject body = new JSONObject();
+                body.put(Constants.REMOTE_MSG_DATA, data);
+                body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens);
+
+//                sendNotification(body.toString());
+            } catch (Exception e) {
+                showToast(e.getMessage());
+            }
+        }
     }
 
     private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
+
+//    private void sendNotification(String messageBody) {
+//        httpClient.getClient().create(httpService.class).sendMessage(
+//                Constants.getRemoteMsgHeaders(),
+//                messageBody
+//        ).enqueue(new Callback<String>() {
+//            @Override
+//            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
+//                if (response.isSuccessful()) {
+//                    try {
+//                        if (response.body() != null) {
+//                            JSONObject responseJSON = new JSONObject(response.body());
+//                            JSONArray results = responseJSON.getJSONArray("results");
+//                            if (responseJSON.getInt("failure") == 1) {
+//                                JSONObject error = (JSONObject) results.get(0);
+//                                showToast(error.getString("error"));
+//                                return;
+//                            }
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                    showToast("Notification sent successfully");
+//                } else {
+//                    showToast("Error: " + response.code());
+//                }
+//            }
+//            @Override
+//            public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+//                showToast(t.getMessage());
+//            }
+//        });
+//    }
 
     // check user online status
     private void listenAvailabilityOfReceiver() {
@@ -311,7 +374,7 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void loadReceiverDetails() {
-        receivedUser = (User) getIntent().getParcelableExtra(Constants.KEY_USER);
+        receivedUser = getIntent().getParcelableExtra(Constants.KEY_USER);
         assert receivedUser != null;
         binding.textName.setText(receivedUser.name);
     }

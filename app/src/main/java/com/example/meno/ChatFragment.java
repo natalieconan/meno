@@ -11,11 +11,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
+import com.example.meno.activities.ChatActivity;
 import com.example.meno.activities.UsersActivity;
+import com.example.meno.adapters.RecentConversationsAdapter;
 import com.example.meno.databinding.FragmentChatBinding;
+import com.example.meno.listeners.ConversationListener;
 import com.example.meno.models.ChatMessage;
+import com.example.meno.models.User;
 import com.example.meno.utilities.Constants;
 import com.example.meno.utilities.PreferenceManager;
 import com.google.firebase.firestore.DocumentChange;
@@ -25,27 +28,41 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class ChatFragment extends Fragment {
+public class ChatFragment extends Fragment implements ConversationListener {
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    protected String mParam1;
+    protected String mParam2;
+
     private FragmentChatBinding binding;
     private PreferenceManager preferenceManager;
     private ArrayList<ChatMessage> conversations;
+    private RecentConversationsAdapter recentConversationsAdapter;
     private FirebaseFirestore database;
     public ChatFragment() {}
+
+    public static ChatFragment newInstance(String param1, String param2) {
+        ChatFragment fragment = new ChatFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
     }
 
     private void setListeners() {
-        binding.fabNewChat.setOnClickListener(v -> {
-            FragmentActivity activity = getActivity();
-            if (activity != null) {
-                startActivity(
-                        new Intent(activity.getApplicationContext(), UsersActivity.class)
-                );
-            }
-        });
+        binding.fabNewChat.setOnClickListener(v ->
+                startActivity(new Intent(getActivity().getApplicationContext(), UsersActivity.class)));
     }
 
     @Override
@@ -53,10 +70,7 @@ public class ChatFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         binding = FragmentChatBinding.inflate(inflater, container, false);
-        FragmentActivity activity = getActivity();
-        if (activity != null) {
-            preferenceManager = new PreferenceManager(activity.getApplicationContext());
-        }
+        preferenceManager = new PreferenceManager(getActivity().getApplicationContext());
         init();
         setListeners();
         listenConversations();
@@ -68,6 +82,13 @@ public class ChatFragment extends Fragment {
                 getConversationImage(preferenceManager.getString(Constants.KEY_IMAGE))
         );
         conversations = new ArrayList<>();
+        recentConversationsAdapter = new RecentConversationsAdapter(
+                conversations,
+                preferenceManager.getString(Constants.KEY_USER_ID),
+                this,
+                getActivity()
+        );
+        binding.conversationsRecyclerView.setAdapter(recentConversationsAdapter);
         database = FirebaseFirestore.getInstance();
     }
 
@@ -87,16 +108,19 @@ public class ChatFragment extends Fragment {
         if (value != null) {
             for (DocumentChange documentChange : value.getDocumentChanges()) {
                 if (documentChange.getType() == DocumentChange.Type.ADDED) {
+
                     String senderId = documentChange.getDocument().getString(Constants.KEY_SENDER_ID);
                     String receiverId = documentChange.getDocument().getString(Constants.KEY_RECEIVER_ID);
                     ChatMessage chatMessage = new ChatMessage();
                     chatMessage.senderId = senderId;
                     chatMessage.receiverId = receiverId;
+
                     if (preferenceManager.getString(Constants.KEY_USER_ID).equals(senderId)) {
                         chatMessage.conversationId = documentChange.getDocument().getString(Constants.KEY_RECEIVER_ID);
                         chatMessage.conversationName = documentChange.getDocument().getString(Constants.KEY_RECEIVER_NAME);
                         chatMessage.conversationImage = documentChange.getDocument().getString(Constants.KEY_RECEIVER_IMAGE);
                         chatMessage.type = documentChange.getDocument().getString(Constants.KEY_TYPE);
+
                         for (ChatMessage conversation : conversations) {
                             if (conversation.conversationId.equals(chatMessage.receiverId)) {
                                 conversations.remove(conversation);
@@ -108,6 +132,7 @@ public class ChatFragment extends Fragment {
                         chatMessage.conversationName = documentChange.getDocument().getString(Constants.KEY_SENDER_NAME);
                         chatMessage.conversationImage = documentChange.getDocument().getString(Constants.KEY_SENDER_IMAGE);
                         chatMessage.type = documentChange.getDocument().getString(Constants.KEY_TYPE);
+
                         for (ChatMessage conversation : conversations) {
                             if (conversation.conversationId.equals(chatMessage.senderId)) {
                                 conversations.remove(conversation);
@@ -123,6 +148,7 @@ public class ChatFragment extends Fragment {
                     for (int i = 0; i < conversations.size(); i++) {
                         String senderId = documentChange.getDocument().getString(Constants.KEY_SENDER_ID);
                         String receiverId = documentChange.getDocument().getString(Constants.KEY_RECEIVER_ID);
+
                         if (conversations.get(i).senderId.equals(senderId) && conversations.get(i).receiverId.equals(receiverId)) {
                             conversations.get(i).message = documentChange.getDocument().getString(Constants.KEY_LAST_MESSAGE);
                             conversations.get(i).type = documentChange.getDocument().getString(Constants.KEY_TYPE);
@@ -132,6 +158,7 @@ public class ChatFragment extends Fragment {
                     }
                 }
             }
+
             conversations.sort((obj1, obj2) -> obj2.dateObject.compareTo(obj1.dateObject));
             binding.conversationsRecyclerView.smoothScrollToPosition(0);
             binding.conversationsRecyclerView.setVisibility(View.VISIBLE);
@@ -139,9 +166,23 @@ public class ChatFragment extends Fragment {
         }
     });
 
+    @Override
+    public void onConversationClicked(User user) {
+        Intent intent = new Intent(getActivity().getApplicationContext(), ChatActivity.class);
+        intent.putExtra(Constants.KEY_USER, user);
+        startActivity(intent);
+    }
+
     // Decode ảnh từ String sang Bitmap
     private Bitmap getConversationImage(String encodedImage) {
         byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        recentConversationsAdapter.notifyDataSetChanged();
+    }
+
 }

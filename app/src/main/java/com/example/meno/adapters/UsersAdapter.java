@@ -13,18 +13,18 @@ import com.example.meno.databinding.ItemContainerUserBinding;
 import com.example.meno.listeners.UserListener;
 import com.example.meno.models.User;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHolder> {
 
-    private final List<User> users;
+    private final ArrayList<User> users;
     private final UserListener userListener;
 
     public static final int VIEW_TYPE_FRAGMENT_USER = 1;
     public static final int VIEW_TYPE_FRAGMENT_GROUP = 2;
     protected final int VIEW_TYPE;
 
-    public UsersAdapter(List<User> users, UserListener userListener) {
+    public UsersAdapter(ArrayList<User> users, UserListener userListener) {
         this.users = users;
         this.userListener = userListener;
         VIEW_TYPE = getViewType(userListener);
@@ -43,7 +43,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-        holder.setUserData(users.get(position));
+        ((UserViewHolder)holder).setUserData(users.get(position));
     }
 
     @Override
@@ -71,7 +71,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             binding.textName.setText(user.name);
             binding.textEmail.setText(user.email);
             binding.imageProfile.setImageBitmap(getUserImage(user.image));
-            binding.getRoot().setOnClickListener(v -> userListener.onUserClicked(user));
+            binding.getRoot().setOnClickListener(v -> userListener.onUserClicked(v, user));
         }
     }
 

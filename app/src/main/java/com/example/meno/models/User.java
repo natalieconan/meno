@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class User implements Parcelable {
-    // Tên, ảnh, email, fcm_token, id, role của user
     public String name, image, email, token, id, role;
 
     protected User(Parcel in) {
