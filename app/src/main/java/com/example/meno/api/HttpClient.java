@@ -3,7 +3,7 @@ package com.example.meno.api;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class httpClient {
+public class HttpClient {
     private static Retrofit retrofit = null;
 
     public static  Retrofit getClient() {
