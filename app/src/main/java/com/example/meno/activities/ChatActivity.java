@@ -1,5 +1,6 @@
 package com.example.meno.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -241,8 +242,7 @@ public class ChatActivity extends BaseActivity {
                 JSONObject body = new JSONObject();
                 body.put(Constants.REMOTE_MSG_DATA, data);
                 body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens);
-
-//                sendNotification(body.toString());
+                
             } catch (Exception e) {
                 showToast(e.getMessage());
             }
@@ -252,39 +252,6 @@ public class ChatActivity extends BaseActivity {
     private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
-
-//    private void sendNotification(String messageBody) {
-//        httpClient.getClient().create(httpService.class).sendMessage(
-//                Constants.getRemoteMsgHeaders(),
-//                messageBody
-//        ).enqueue(new Callback<String>() {
-//            @Override
-//            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
-//                if (response.isSuccessful()) {
-//                    try {
-//                        if (response.body() != null) {
-//                            JSONObject responseJSON = new JSONObject(response.body());
-//                            JSONArray results = responseJSON.getJSONArray("results");
-//                            if (responseJSON.getInt("failure") == 1) {
-//                                JSONObject error = (JSONObject) results.get(0);
-//                                showToast(error.getString("error"));
-//                                return;
-//                            }
-//                        }
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                    showToast("Notification sent successfully");
-//                } else {
-//                    showToast("Error: " + response.code());
-//                }
-//            }
-//            @Override
-//            public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
-//                showToast(t.getMessage());
-//            }
-//        });
-//    }
 
     // check user online status
     private void listenAvailabilityOfReceiver() {
@@ -330,6 +297,7 @@ public class ChatActivity extends BaseActivity {
                 .addSnapshotListener(eventListener);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private final EventListener<QuerySnapshot> eventListener = (value, error) -> {
         if (error != null) {
             return;
@@ -345,7 +313,7 @@ public class ChatActivity extends BaseActivity {
                     chatMessage.message = documentChange.getDocument().getString(Constants.KEY_MESSAGE);
                     chatMessage.dateTime = getReadableDateTime(documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP));
                     chatMessage.dateObject = documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP);
-                    chatMessage.type = "text";
+                    chatMessage.type = documentChange.getDocument().getString(Constants.KEY_TYPE);
                     chatMessages.add(chatMessage);
                 }
             }
