@@ -36,7 +36,7 @@ public class Constants {
     public static final String KEY_ROLE = "role";
     public static final String KEY_COLLECTIONS_MEMBERS = "members";
     public static final String KEY_COLLECTION_LAST_MESSAGE = "lastMessage";
-
+    public static final String KEY_COLLECTION_GROUP_MESSAGE = "groupMessage";
 
     // Constants for notification
     public static final String REMOTE_MSG_AUTHORIZATION = "Authorization";
