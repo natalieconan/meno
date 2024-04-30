@@ -1,7 +1,6 @@
 package com.example.meno.adapters;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.meno.databinding.ItemContainerRecievedMessageBinding;
 import com.example.meno.databinding.ItemContainerSentMessageBinding;
 import com.example.meno.models.ChatMessage;
-import com.example.meno.utilities.ImageDownloaderTask;
-import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -96,16 +93,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             binding = itemContainerSentMessageBinding;
         }
 
-        private void bindImageToImageView(String imageUrl, RoundedImageView imageView)  {
-            ImageDownloaderTask downloaderTask = new ImageDownloaderTask(imageView);
-            downloaderTask.execute(imageUrl);
-        }
-
         // attach data to viewHolder base on message type
         void setData(ChatMessage chatMessage) {
-            Log.d("meno", "TYPE : " + chatMessage.message);
-            Log.d("meno", "CONTENT : " + chatMessage.type);
-
             switch (chatMessage.type) {
                 case "text":
                     binding.textMessage.setVisibility(View.VISIBLE);
@@ -115,7 +104,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 case "image":
                     binding.textMessage.setVisibility(View.GONE);
                     binding.imageMessage.setVisibility(View.VISIBLE);
-                    Picasso.get().setLoggingEnabled(true);
                     Picasso.get().load(chatMessage.message).into(binding.imageMessage);
                     break;
                 case "audio":
@@ -135,11 +123,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             binding = itemContainerRecievedMessageBinding;
         }
 
-        private void bindImageToImageView(String imageUrl, RoundedImageView imageView)  {
-            ImageDownloaderTask downloaderTask = new ImageDownloaderTask(imageView);
-            downloaderTask.execute(imageUrl);
-        }
-
         void setData(ChatMessage chatMessage, Bitmap receiverProfileImage) {
             switch (chatMessage.type) {
                 case "text":
@@ -150,7 +133,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 case "image":
                     binding.textMessage.setVisibility(View.GONE);
                     binding.imageMessage.setVisibility(View.VISIBLE);
-                    Picasso.get().setLoggingEnabled(true);
                     Picasso.get().load(chatMessage.message).into(binding.imageMessage);
                     break;
                 case "audio":
