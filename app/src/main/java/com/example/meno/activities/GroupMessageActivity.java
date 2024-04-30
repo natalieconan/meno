@@ -78,8 +78,6 @@ public class GroupMessageActivity extends AppCompatActivity {
         );
         binding.chatRecyclerView.setAdapter(groupChatAdapter);
         database = FirebaseFirestore.getInstance();
-        binding.recordButton.setRecordView(binding.recordView);
-        binding.recordButton.setListenForRecord(false);
         lastMessageModel = new GroupLastMessageModel();
     }
 

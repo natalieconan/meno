@@ -242,7 +242,7 @@ public class ChatActivity extends BaseActivity {
                 JSONObject body = new JSONObject();
                 body.put(Constants.REMOTE_MSG_DATA, data);
                 body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens);
-                
+
             } catch (Exception e) {
                 showToast(e.getMessage());
             }
