@@ -39,12 +39,13 @@ public class Constants {
     public static final String KEY_COLLECTION_GROUP_MESSAGE = "groupMessage";
 
     // Constants for notification
+    public static final String REMOTE_MSG_TYPE = "type";
     public static final String REMOTE_MSG_AUTHORIZATION = "Authorization";
     public static final String REMOTE_MSG_CONTENT_TYPE = "Content-Type";
 
     public static final String REMOTE_MSG_DATA = "data";
     public static final String REMOTE_MSG_REGISTRATION_IDS = "registration_ids";
-    public static final String SERVER_KEY = "key=YOUR_SERVER_KEY";
+    public static final String SERVER_KEY = "key=AAAA3IxhYgg:APA91bFbSiyBXIkyJc0RYYsgCLrzh5iga9pfbZ6wBl1VtQ1k9jE2ODSmfMhUVhmkkA4IWIPsZ0JlDgL0bS55-uMLP7xZMz20KKIaZ8lEEqJGK_FlZpuIZtS__bIs9F2jk-S_ZMSHpQB6";
 
     public static HashMap<String, String> remoteMsgHeaders = null;
 

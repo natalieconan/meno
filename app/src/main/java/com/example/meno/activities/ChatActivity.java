@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -15,6 +16,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.example.meno.adapters.ChatAdapter;
+import com.example.meno.api.HttpClient;
+import com.example.meno.api.HttpService;
 import com.example.meno.databinding.ActivityChatBinding;
 import com.example.meno.models.ChatMessage;
 import com.example.meno.models.User;
@@ -33,6 +36,7 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -43,6 +47,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatActivity extends BaseActivity {
 
@@ -243,6 +251,7 @@ public class ChatActivity extends BaseActivity {
                 body.put(Constants.REMOTE_MSG_DATA, data);
                 body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens);
 
+                sendNotification(body.toString());
             } catch (Exception e) {
                 showToast(e.getMessage());
             }
@@ -251,6 +260,39 @@ public class ChatActivity extends BaseActivity {
 
     private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void sendNotification(String messageBody) {
+        HttpClient.getClient().create(HttpService.class).sendMessage(
+                Constants.getRemoteMsgHeaders(),
+                messageBody
+        ).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        if (response.body() != null) {
+                            JSONObject responseJSON = new JSONObject(response.body());
+                            JSONArray results = responseJSON.getJSONArray("results");
+                            if (responseJSON.getInt("failure") == 1) {
+                                JSONObject error = (JSONObject) results.get(0);
+                                showToast(error.getString("error"));
+                                return;
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    showToast("Notification sent successfully");
+                } else {
+                    showToast("Error: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+                showToast(t.getMessage());
+            }
+        });
     }
 
     // check user online status
