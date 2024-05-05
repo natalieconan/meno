@@ -84,6 +84,9 @@ dependencies {
     // Picasso
     implementation("com.squareup.picasso:picasso:2.71828")
 
+    // Jitsi
+    implementation("org.jitsi.react:jitsi-meet-sdk:7.0.1")
+
     // Retrofit for HTTP client for Java
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
