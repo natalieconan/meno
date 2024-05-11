@@ -1,5 +1,6 @@
 package com.example.meno.activities;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,12 +22,9 @@ import com.example.meno.models.User;
 import com.example.meno.utilities.Constants;
 import com.example.meno.utilities.PreferenceManager;
 
-import org.jitsi.meet.sdk.JitsiMeetActivity;
-import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -146,19 +144,18 @@ public class VideoCallingOutgoingActivity extends AppCompatActivity {
     }
     private final BroadcastReceiver invitationResponseReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(Context context, @SuppressLint("UnsafeIntentLaunch") Intent intent) {
             String type = intent.getStringExtra(Constants.REMOTE_MSG_INVITATION_RESPONSE);
             if (Objects.equals(type, Constants.REMOTE_MSG_INVITATION_ACCEPTED)) {
                 showToast("Invitation Accepted");
                 try {
-                    URL serverURL = new URL("https://meet.jit.si");
-                    JitsiMeetConferenceOptions conferenceOptions = new JitsiMeetConferenceOptions.Builder()
-                            .setServerURL(serverURL)
-                            .setFeatureFlag("welcomepage.enabled", false)
-                            .setRoom(meetingRoom)
-                            .build();
-                    JitsiMeetActivity.launch(VideoCallingOutgoingActivity.this, conferenceOptions);
-                    finish();
+                    User user = getIntent().getParcelableExtra(Constants.KEY_USER);
+                    intent = new Intent(VideoCallingOutgoingActivity.this, ConferenceActivity.class);
+                    if (user != null) {
+                        intent.putExtra(Constants.KEY_USER_ID, user.id);
+                        intent.putExtra(Constants.KEY_NAME, user.name);
+                        startActivity(intent);
+                    }
                 } catch (Exception e) {
                     showToast(e.getMessage());
                     finish();

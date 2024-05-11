@@ -20,12 +20,9 @@ import com.example.meno.databinding.ActivityVideoCallingInComingBinding;
 import com.example.meno.utilities.Constants;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.jitsi.meet.sdk.JitsiMeetActivity;
-import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.net.URL;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -98,14 +95,12 @@ public class VideoCallingInComingActivity extends AppCompatActivity {
                         showToast("Invitation Accepted");
 
                         try {
-                            URL serverURL = new URL("https://meet.jit.si");
-                            JitsiMeetConferenceOptions conferenceOptions = new JitsiMeetConferenceOptions.Builder()
-                                    .setServerURL(serverURL)
-                                    .setRoom(getIntent().getStringExtra(Constants.REMOTE_MSG_MEETING_ROOM))
-                                    .setFeatureFlag("welcomepage.enabled", false)
-                                    .build();
-                            JitsiMeetActivity.launch(VideoCallingInComingActivity.this, conferenceOptions);
-                            finish();
+                            String userID = getIntent().getStringExtra(Constants.KEY_USER_ID);
+                            String userName = getIntent().getStringExtra(Constants.KEY_NAME);
+                            Intent intentAcceptCalling = new Intent(VideoCallingInComingActivity.this, ConferenceActivity.class);
+                            intentAcceptCalling.putExtra(Constants.KEY_USER_ID, userID);
+                            intentAcceptCalling.putExtra(Constants.KEY_NAME, userName);
+                            startActivity(intentAcceptCalling);
                         } catch (Exception e) {
                             showToast(e.getMessage());
                             finish();
