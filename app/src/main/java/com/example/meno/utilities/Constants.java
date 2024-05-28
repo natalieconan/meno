@@ -3,6 +3,7 @@ package com.example.meno.utilities;
 import java.util.HashMap;
 
 public class Constants {
+    public static final String KEY_CURRENT_USER = "currentUser";
     public static final String KEY_COLLECTION_USERS = "users";
     public static final String KEY_NAME = "name";
     public static final String KEY_EMAIL = "email";
@@ -56,6 +57,9 @@ public class Constants {
     public static final String REMOTE_MSG_REGISTRATION_IDS = "registration_ids";
     public static final String SERVER_KEY = "key=AAAA3IxhYgg:APA91bFbSiyBXIkyJc0RYYsgCLrzh5iga9pfbZ6wBl1VtQ1k9jE2ODSmfMhUVhmkkA4IWIPsZ0JlDgL0bS55-uMLP7xZMz20KKIaZ8lEEqJGK_FlZpuIZtS__bIs9F2jk-S_ZMSHpQB6";
 
+    public static final String REMOTE_CAMERA_STATE = "camera";
+    public static final String REMOTE_CAMERA_OPEN = "cameraOpen";
+    public static final String REMOTE_CAMERA_CLOSE = "cameraClose";
     public static final long ZEGOCLOUD_APP_ID = 265187839;
     public static final String ZEGOCLOUD_APP_SIGN = "d1f64ff9cc94d795bd5b27d74971507ab2b85fd8977557f0cd6e65abcf60f438";
     public static HashMap<String, String> remoteMsgHeaders = null;

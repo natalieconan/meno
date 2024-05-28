@@ -152,6 +152,8 @@ public class VideoCallingOutgoingActivity extends AppCompatActivity {
                     User user = getIntent().getParcelableExtra(Constants.KEY_USER);
                     intent = new Intent(VideoCallingOutgoingActivity.this, ConferenceActivity.class);
                     if (user != null) {
+                        intent.putExtra(Constants.REMOTE_CAMERA_STATE,
+                                getIntent().getStringExtra(Constants.REMOTE_CAMERA_STATE));
                         intent.putExtra(Constants.KEY_USER_ID, user.id);
                         intent.putExtra(Constants.KEY_NAME, user.name);
                         startActivity(intent);

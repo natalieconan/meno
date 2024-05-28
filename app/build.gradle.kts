@@ -84,9 +84,6 @@ dependencies {
     // Picasso
     implementation("com.squareup.picasso:picasso:2.71828")
 
-    // Jitsi
-    implementation("org.jitsi.react:jitsi-meet-sdk:+")
-
     // Zego
     implementation("com.github.ZEGOCLOUD:zego_uikit_prebuilt_video_conference_android:+")
 

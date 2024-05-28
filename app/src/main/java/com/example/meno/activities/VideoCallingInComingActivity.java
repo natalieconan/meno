@@ -44,7 +44,6 @@ public class VideoCallingInComingActivity extends AppCompatActivity {
     }
 
     private void init() {
-        String meetingType = getIntent().getStringExtra(Constants.REMOTE_MSG_MEETING_TYPE);
         database = FirebaseFirestore.getInstance();
     }
 
@@ -70,6 +69,7 @@ public class VideoCallingInComingActivity extends AppCompatActivity {
             JSONObject body = new JSONObject();
             JSONObject data = new JSONObject();
 
+            data.put(Constants.REMOTE_CAMERA_STATE, getIntent().getStringExtra(Constants.REMOTE_CAMERA_STATE));
             data.put(Constants.REMOTE_MSG_TYPE, Constants.REMOTE_MSG_INVITATION_RESPONSE);
             data.put(Constants.REMOTE_MSG_INVITATION_RESPONSE, type);
 
@@ -98,6 +98,8 @@ public class VideoCallingInComingActivity extends AppCompatActivity {
                             String userID = getIntent().getStringExtra(Constants.KEY_USER_ID);
                             String userName = getIntent().getStringExtra(Constants.KEY_NAME);
                             Intent intentAcceptCalling = new Intent(VideoCallingInComingActivity.this, ConferenceActivity.class);
+                            intentAcceptCalling.putExtra(Constants.REMOTE_CAMERA_STATE,
+                                    getIntent().getStringExtra(Constants.REMOTE_CAMERA_STATE));
                             intentAcceptCalling.putExtra(Constants.KEY_USER_ID, userID);
                             intentAcceptCalling.putExtra(Constants.KEY_NAME, userName);
                             startActivity(intentAcceptCalling);

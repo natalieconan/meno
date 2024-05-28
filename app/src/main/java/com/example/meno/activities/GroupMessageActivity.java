@@ -119,6 +119,31 @@ public class GroupMessageActivity extends AppCompatActivity {
         binding.imageSend.setOnClickListener(v -> sendMessage());
         binding.imagePhoto.setOnClickListener(v -> sendImage());
         binding.imageInfo.setOnClickListener(v -> showInfoGroup());
+        try {
+            binding.imagePhone.setOnClickListener(v -> {
+                Intent intent = new Intent(GroupMessageActivity.this, ConferenceActivity.class);
+                intent.putExtra(Constants.REMOTE_CAMERA_STATE, Constants.REMOTE_CAMERA_CLOSE);
+                intent.putExtra(Constants.KEY_USER_ID, preferenceManager.getString(Constants.KEY_USER_ID));
+                intent.putExtra(Constants.KEY_NAME, preferenceManager.getString(Constants.KEY_NAME));
+                startActivity(intent);
+            });
+        } catch (Exception e) {
+            showToast(e.getMessage());
+            finish();
+        }
+
+        try {
+            binding.imageVideo.setOnClickListener(v -> {
+                Intent intent = new Intent(GroupMessageActivity.this, ConferenceActivity.class);
+                intent.putExtra(Constants.REMOTE_CAMERA_STATE, Constants.REMOTE_CAMERA_OPEN);
+                intent.putExtra(Constants.KEY_USER_ID, preferenceManager.getString(Constants.KEY_USER_ID));
+                intent.putExtra(Constants.KEY_NAME, preferenceManager.getString(Constants.KEY_NAME));
+                startActivity(intent);
+            });
+        } catch (Exception e) {
+            showToast(e.getMessage());
+            finish();
+        }
     }
 
     private void showInfoGroup() {

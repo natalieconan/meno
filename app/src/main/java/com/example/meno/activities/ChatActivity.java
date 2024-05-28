@@ -113,8 +113,19 @@ public class ChatActivity extends BaseActivity {
         binding.imageBack.setOnClickListener(v -> onBackPressed());
         binding.imageSend.setOnClickListener(v -> sendMessage());
         binding.imagePhoto.setOnClickListener(v -> sendImage());
+        binding.imageLike.setOnClickListener(v -> sendImage());
+
+        binding.imagePhone.setOnClickListener(v -> {
+            Intent intent = new Intent(ChatActivity.this, VideoCallingOutgoingActivity.class);
+            intent.putExtra(Constants.REMOTE_CAMERA_STATE, Constants.REMOTE_CAMERA_CLOSE);
+            intent.putExtra(Constants.KEY_USER, receivedUser);
+            intent.putExtra(Constants.REMOTE_MSG_MEETING_TYPE, "voice");
+            startActivity(intent);
+        });
+
         binding.imageVideo.setOnClickListener(v -> {
             Intent intent = new Intent(ChatActivity.this, VideoCallingOutgoingActivity.class);
+            intent.putExtra(Constants.REMOTE_CAMERA_STATE, Constants.REMOTE_CAMERA_OPEN);
             intent.putExtra(Constants.KEY_USER, receivedUser);
             intent.putExtra(Constants.REMOTE_MSG_MEETING_TYPE, "video");
             startActivity(intent);
