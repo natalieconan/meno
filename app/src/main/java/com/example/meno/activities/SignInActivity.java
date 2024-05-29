@@ -6,8 +6,6 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.meno.MainActivity;
 import com.example.meno.databinding.ActivitySignInBinding;
 import com.example.meno.utilities.Constants;
@@ -15,7 +13,7 @@ import com.example.meno.utilities.PreferenceManager;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class SignInActivity extends AppCompatActivity {
+public class SignInActivity extends BaseActivity {
     private ActivitySignInBinding binding;
     private PreferenceManager preferenceManager;
 

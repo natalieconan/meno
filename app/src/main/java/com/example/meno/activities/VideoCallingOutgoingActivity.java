@@ -12,7 +12,6 @@ import android.util.Base64;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.meno.api.HttpClient;
@@ -32,7 +31,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class VideoCallingOutgoingActivity extends AppCompatActivity {
+public class VideoCallingOutgoingActivity extends BaseActivity {
     ActivityVideoCallingOutgoingBinding binding;
     private User receivedUser;
     private PreferenceManager preferenceManager;

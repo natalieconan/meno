@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.meno.MainActivity;
 import com.example.meno.R;
 import com.example.meno.utilities.Constants;
@@ -16,7 +14,7 @@ import com.zegocloud.uikit.prebuilt.videoconference.config.ZegoLeaveConfirmDialo
 
 import java.util.Objects;
 
-public class ConferenceActivity extends AppCompatActivity {
+public class ConferenceActivity extends BaseActivity {
     protected PreferenceManager preferenceManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

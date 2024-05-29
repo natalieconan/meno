@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.meno.adapters.GroupChatAdapter;
@@ -46,7 +45,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
-public class GroupMessageActivity extends AppCompatActivity {
+public class GroupMessageActivity extends BaseActivity {
     private ActivityGroupMessageBinding binding;
     private FirebaseFirestore database;
     private PreferenceManager preferenceManager;

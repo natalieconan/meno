@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.meno.adapters.UsersAdapter;
 import com.example.meno.databinding.ActivityGroupBinding;
@@ -32,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class GroupActivity extends AppCompatActivity implements UserListener {
+public class GroupActivity extends BaseActivity implements UserListener {
 
     private static ActivityGroupBinding binding;
     private String encodeImage;
