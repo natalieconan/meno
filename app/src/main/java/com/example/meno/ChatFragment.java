@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.meno.activities.ChatActivity;
+import com.example.meno.activities.SearchActivity;
 import com.example.meno.activities.UsersActivity;
 import com.example.meno.adapters.RecentConversationsAdapter;
 import com.example.meno.databinding.FragmentChatBinding;
@@ -63,6 +64,10 @@ public class ChatFragment extends Fragment implements ConversationListener {
     private void setListeners() {
         binding.fabNewChat.setOnClickListener(v ->
                 startActivity(new Intent(getActivity().getApplicationContext(), UsersActivity.class)));
+        binding.inputSearch.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity().getApplicationContext(), SearchActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override
