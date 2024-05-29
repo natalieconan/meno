@@ -4,11 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 
 import com.example.meno.adapters.UsersAdapter;
 import com.example.meno.databinding.ActivitySearchBinding;
@@ -74,53 +72,50 @@ public class SearchActivity extends BaseActivity implements UserListener {
             }
         });
 
-        binding.inputSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (i == EditorInfo.IME_ACTION_SEARCH) {
-                    users.clear();
-                    String text = binding.inputSearch.getText().toString().toLowerCase().trim();
-                    database.collection(Constants.KEY_COLLECTION_USERS)
-                            .get()
-                            .addOnCompleteListener(task -> {
-                                loading(false);
-                                String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
-                                if (task.isSuccessful() && task.getResult() != null) {
-                                    for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
-                                        if (currentUserId.equals(queryDocumentSnapshot.getId())) {
-                                            continue;
-                                        }
-                                        if (Objects.requireNonNull(queryDocumentSnapshot.getString(Constants.KEY_NAME)).toLowerCase().contains(text)) {
-                                            User user = new User();
-                                            user.name = queryDocumentSnapshot.getString(Constants.KEY_NAME);
-                                            user.email = queryDocumentSnapshot.getString(Constants.KEY_EMAIL);
-                                            user.image = queryDocumentSnapshot.getString(Constants.KEY_IMAGE);
-                                            user.token = queryDocumentSnapshot.getString(Constants.KEY_FCM_TOKEN);
-                                            user.id = queryDocumentSnapshot.getId();
-                                            users.add(user);
-                                        }
+        binding.inputSearch.setOnEditorActionListener((textView, i, keyEvent) -> {
+            if (i == EditorInfo.IME_ACTION_SEARCH) {
+                users.clear();
+                String text = binding.inputSearch.getText().toString().toLowerCase().trim();
+                database.collection(Constants.KEY_COLLECTION_USERS)
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            loading(false);
+                            String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
+                                    if (currentUserId.equals(queryDocumentSnapshot.getId())) {
+                                        continue;
                                     }
-                                    if (users.size() > 0) {
-
-                                        UsersAdapter usersAdaptor = new UsersAdapter(users, SearchActivity.this::onUserClicked);
-                                        binding.usersRecyclerView.setAdapter(usersAdaptor);
-                                        binding.textErrorMessage.setVisibility(View.GONE);
-                                        binding.usersRecyclerView.setVisibility(View.VISIBLE);
-                                        usersAdaptor.notifyDataSetChanged();
-                                    } else {
-                                        binding.usersRecyclerView.setVisibility(View.GONE);
-                                        showErrorMessage();
+                                    if (Objects.requireNonNull(queryDocumentSnapshot.getString(Constants.KEY_NAME)).toLowerCase().contains(text)) {
+                                        User user = new User();
+                                        user.name = queryDocumentSnapshot.getString(Constants.KEY_NAME);
+                                        user.email = queryDocumentSnapshot.getString(Constants.KEY_EMAIL);
+                                        user.image = queryDocumentSnapshot.getString(Constants.KEY_IMAGE);
+                                        user.token = queryDocumentSnapshot.getString(Constants.KEY_FCM_TOKEN);
+                                        user.id = queryDocumentSnapshot.getId();
+                                        users.add(user);
                                     }
-                                    binding.suggested.setVisibility(View.GONE);
-                                } else {
-                                    showErrorMessage();
-                                    binding.suggested.setVisibility(View.GONE);
                                 }
-                            });
-                    return true;
-                }
-                return false;
+                                if (users.size() > 0) {
+
+                                    UsersAdapter usersAdapter = new UsersAdapter(users, SearchActivity.this::onUserClicked);
+                                    binding.usersRecyclerView.setAdapter(usersAdapter);
+                                    binding.textErrorMessage.setVisibility(View.GONE);
+                                    binding.usersRecyclerView.setVisibility(View.VISIBLE);
+                                    usersAdapter.notifyDataSetChanged();
+                                } else {
+                                    binding.usersRecyclerView.setVisibility(View.GONE);
+                                    showErrorMessage();
+                                }
+                                binding.suggested.setVisibility(View.GONE);
+                            } else {
+                                showErrorMessage();
+                                binding.suggested.setVisibility(View.GONE);
+                            }
+                        });
+                return true;
             }
+            return false;
         });
     }
 
@@ -146,10 +141,10 @@ public class SearchActivity extends BaseActivity implements UserListener {
                             users.add(user);
                         }
                         if (users.size() > 0) {
-                            UsersAdapter usersAdaptor = new UsersAdapter(users, this);
-                            binding.usersRecyclerView.setAdapter(usersAdaptor);
+                            UsersAdapter usersAdapter = new UsersAdapter(users, this);
+                            binding.usersRecyclerView.setAdapter(usersAdapter);
                             binding.usersRecyclerView.setVisibility(View.VISIBLE);
-                            usersAdaptor.notifyDataSetChanged();
+                            usersAdapter.notifyDataSetChanged();
                         } else {
                             showErrorMessage();
                         }
